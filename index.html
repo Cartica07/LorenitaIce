@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffd3e0">
+<title>Para Alejandra 🌷</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌷</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+/*
+  TAMAÑO IGUAL EN TODOS LOS CELULARES
+  Todo el diseño está hecho en "rem" sobre un lienzo de 22.5 x 40 rem (formato vertical 9:16).
+  El tamaño del rem se calcula para que ese lienzo SIEMPRE quepa completo en la pantalla,
+  así que todo se ve con las mismas proporciones en cualquier celular (o computador).
+*/
+:root{
+  --berry:#a8184f;
+  --berry-suave:#c9426f;
+  --rosa:#f06292;
+  --crema:#fff8f1;
+  --oro:#e7b04a;
+  --script:'Dancing Script','Segoe Script','Brush Script MT','Snell Roundhand',cursive;
+  --gala:'Great Vibes','Dancing Script','Segoe Script','Brush Script MT',cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{
+  font-size:16px;
+  font-size:min(100vw / 22.5, 100vh / 40);
+  font-size:min(100vw / 22.5, 100dvh / 40);
+  height:100%;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+}
+body{
+  height:100%;overflow:hidden;background:#ffd3e0;color:var(--berry);
+  font-family:var(--script);touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible{outline:.2rem solid var(--berry);outline-offset:.5rem;border-radius:1rem}
+
+/* ---------- pantallas ---------- */
+.pantalla{
+  position:fixed;inset:0;overflow:hidden;
+  display:flex;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .9s ease,visibility 0s linear .9s;
+}
+.pantalla.activa{opacity:1;visibility:visible;transition:opacity .9s ease}
+.escena{position:relative;width:22.5rem;height:100%;flex:none}
+/* guirnaldas pegadas al borde de arriba y de abajo de la pantalla */
+.borde{position:absolute;left:0;width:22.5rem;height:4.2rem;pointer-events:none}
+.borde.sup{top:0}.borde.inf{bottom:0}
+/* lienzo de 22.5 x 40 rem, siempre centrado (así el contenido se ve igual en todos los celulares) */
+.lienzo{position:absolute;left:0;top:50%;width:22.5rem;height:40rem;margin-top:-20rem}
+
+#p1{background:radial-gradient(120% 65% at 50% 32%,#fff6f8 0%,#ffdde8 58%,#ffc4d7 100%)}
+#p2{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath fill='%23ffffff' fill-opacity='.42' d='M30 40l-1.2-1.1C24.5 35 21.7 32.4 21.7 29.3c0-2.6 2-4.6 4.6-4.6 1.4 0 2.8.7 3.7 1.7.9-1 2.3-1.7 3.7-1.7 2.6 0 4.6 2 4.6 4.6 0 3.1-2.8 5.7-7.1 8.6L30 40z' transform='translate(0 -6) scale(.85) translate(5 5)'/%3E%3C/svg%3E"),
+    radial-gradient(115% 70% at 50% 36%,#fff2f6 0%,#ffd0e1 58%,#f8b4cd 100%);
+  background-size:3.4rem 3.4rem,auto;
+}
+
+/* ---------- decoración (flores, hojas, corazones) ---------- */
+.deco{
+  position:absolute;left:var(--x);top:var(--y);
+  width:var(--w);height:var(--h,var(--w));
+  transform:translate(-50%,-50%) rotate(var(--r,0deg));
+  color:var(--c);overflow:visible;opacity:0;pointer-events:none;
+  filter:drop-shadow(0 .12rem .18rem rgba(120,20,55,.28));
+}
+.visto .deco{animation:brotar .95s cubic-bezier(.2,1.25,.4,1) var(--d,0s) both}
+@keyframes brotar{
+  from{opacity:0;transform:translate(-50%,-50%) rotate(calc(var(--r,0deg) - 55deg)) scale(.15)}
+  to{opacity:1;transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1)}
+}
+
+/* corazones que suben */
+.capa{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.cf{
+  position:absolute;bottom:-3rem;opacity:0;
+  animation:subir linear forwards;
+  filter:drop-shadow(0 .1rem .15rem rgba(120,20,55,.2));
+}
+@keyframes subir{
+  0%{opacity:0;transform:translate(0,0) rotate(-8deg) scale(.6)}
+  12%{opacity:.85}
+  70%{opacity:.8}
+  100%{opacity:0;transform:translate(var(--dx),-112vh) rotate(12deg) scale(1.05)}
+}
+.chispa{
+  position:absolute;opacity:0;pointer-events:none;
+  animation:explota 1.1s cubic-bezier(.15,.7,.3,1) forwards;
+}
+@keyframes explota{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.1)}
+}
+
+/* ---------- PANTALLA 1: letrero ---------- */
+.colgante{
+  position:absolute;left:1.25rem;top:7.4rem;width:20rem;
+  transform-origin:50% calc(-5.6rem - var(--extra,0rem));
+  animation:caer 1.5s cubic-bezier(.2,.9,.3,1.15) both, mecer 6s ease-in-out 1.6s infinite;
+}
+@keyframes caer{
+  0%{transform:translateY(-32rem) rotate(5deg);opacity:0}
+  35%{opacity:1}
+  100%{transform:none;opacity:1}
+}
+@keyframes mecer{0%,100%{transform:rotate(0)}30%{transform:rotate(-1.1deg)}70%{transform:rotate(1.1deg)}}
+.cuerdas{position:absolute;left:0;bottom:calc(100% - .3rem);width:100%;height:calc(5.7rem + var(--extra,0rem));overflow:visible}
+.clavo{position:absolute;left:50%;top:calc(-5.6rem - var(--extra,0rem));width:1.1rem;height:1.1rem;margin-left:-.55rem;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff2b8,#e7b04a 60%,#b9822a);box-shadow:0 .1rem .2rem rgba(0,0,0,.35)}
+.letrero{
+  position:relative;
+  min-height:17.6rem;padding:2.1rem 1.3rem 1.8rem;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#fffdf9 0%,#fff3ee 55%,#ffe9ee 100%);
+  border-radius:2rem;
+  border:.3rem solid #e58aa8;
+  box-shadow:
+    0 0 0 .3rem #fff,
+    0 0 0 .55rem #f4b7cb,
+    0 1.2rem 2.2rem rgba(150,30,70,.28),
+    inset 0 0 0 .5rem #fff8f3,
+    inset 0 0 0 .62rem #f2c1d2;
+}
+.letrero::before,.letrero::after{ /* clavitos dorados */
+  content:"";position:absolute;top:.9rem;width:.8rem;height:.8rem;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff2b8,#e7b04a 60%,#b9822a);
+  box-shadow:0 .08rem .12rem rgba(0,0,0,.3);
+}
+.letrero::before{left:1.3rem}.letrero::after{right:1.3rem}
+.letrero>svg.mini{width:1.7rem;height:1.7rem;color:#e63950;margin-bottom:.1rem}
+.fit{display:block;width:100%;white-space:nowrap;text-align:center}
+.bienvenida{
+  font-family:var(--gala);font-weight:400;line-height:1.15;color:var(--berry);
+  text-shadow:0 .1rem 0 #fff,0 .35rem .7rem rgba(240,98,146,.35);
+}
+.divisor{display:flex;align-items:center;gap:.6rem;margin:.35rem 0 .55rem;width:78%}
+.divisor i{flex:1;height:.14rem;border-radius:1rem;background:linear-gradient(90deg,transparent,#e58aa8)}
+.divisor i:last-child{background:linear-gradient(270deg,transparent,#e58aa8)}
+.divisor svg{width:1.2rem;height:1.2rem;color:var(--rosa)}
+.nombre{
+  font-weight:700;line-height:1.2;color:#7d1a45;
+  text-shadow:0 .08rem 0 #fff;
+}
+
+.toca{
+  position:absolute;left:50%;top:28.3rem;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  opacity:0;animation:aparece .8s ease 2.4s forwards;
+  transition:opacity .5s ease,transform .5s ease;
+}
+@keyframes aparece{to{opacity:1}}
+.toca svg{width:4.6rem;height:4.6rem;color:#e63950;animation:latido 1.3s ease-in-out infinite;filter:drop-shadow(0 .25rem .4rem rgba(200,30,70,.4))}
+.toca span{font-size:2.3rem;line-height:1.15;white-space:nowrap;font-weight:700;color:var(--berry);text-shadow:0 .1rem 0 #fff,0 .2rem .6rem rgba(255,255,255,.8)}
+@keyframes latido{0%,100%{transform:scale(1)}18%{transform:scale(1.14)}34%{transform:scale(1)}50%{transform:scale(1.1)}70%{transform:scale(1)}}
+.toca.pulsado{opacity:0!important;animation:none;transform:translateX(-50%) scale(1.5);pointer-events:none}
+
+/* ---------- PANTALLA 2: fotos ---------- */
+.marco{
+  position:absolute;left:1.95rem;top:5.2rem;width:18.6rem;height:22rem;
+  padding:.65rem;border-radius:1.6rem;
+  background:linear-gradient(145deg,#fff,#fff0f5);
+  border:.28rem solid #e58aa8;
+  box-shadow:0 0 0 .3rem #fff,0 0 0 .55rem #f4b7cb,0 1.1rem 2.2rem rgba(150,30,70,.32);
+}
+.foto{position:relative;width:100%;height:100%;border-radius:1rem;overflow:hidden;background:#fff}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
+.slide.on{opacity:1}
+.slide .fondo{position:absolute;inset:-2rem;background-size:cover;background-position:center;filter:blur(1.6rem) saturate(1.05);opacity:.38}
+.slide img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  transform:scale(1.05);transition:transform 5s linear;
+}
+.slide.on img{transform:scale(1)}
+
+.mensaje{position:absolute;left:0;right:0;top:29.2rem;padding:0 1rem;text-align:center}
+.mensaje .fit{
+  font-weight:700;line-height:1.14;color:var(--berry);
+  text-shadow:0 .1rem 0 #fff,0 .3rem .9rem rgba(255,255,255,.75);
+}
+.palabra{display:inline-block;opacity:0;transform:translateY(.5rem) scale(.82);animation:surgirPalabra .5s cubic-bezier(.2,1,.3,1) forwards}
+@keyframes surgirPalabra{to{opacity:1;transform:none}}
+
+.musica{
+  position:absolute;left:50%;top:.9rem;transform:translateX(-50%);z-index:5;
+  padding:.5rem 1.2rem;border-radius:2rem;font-size:1.25rem;font-weight:700;
+  background:#fff;color:var(--berry);box-shadow:0 .3rem 1rem rgba(150,30,70,.3);
+  animation:latido 1.6s ease-in-out infinite;
+}
+.musica[hidden]{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  .colgante,.toca svg,.musica{animation:none}
+  .colgante{opacity:1}
+  .visto .deco{animation:none;opacity:1}
+  .toca{animation:none;opacity:1}
+  .palabra{animation:none;opacity:1}
+  .slide img{transition:none;transform:none}
+}
+</style>
+</head>
+
+<body>
+<!-- dibujos reutilizables (flores, hoja, corazón): se generan abajo en el script -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="defs"></defs></svg>
+
+<!-- ================= PANTALLA 1 ================= -->
+<section class="pantalla activa visto" id="p1" aria-label="Bienvenida">
+  <div class="capa"></div>
+  <div class="escena" id="e1">
+   <div class="borde sup" id="s1"></div>
+   <div class="borde inf" id="i1"></div>
+   <div class="lienzo" id="l1">
+    <div class="colgante">
+      <i class="clavo"></i>
+      <svg class="cuerdas" viewBox="0 0 300 86" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M150 0 L34 86 M150 0 L266 86" stroke="#c99a5b" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="letrero">
+        <svg class="mini" aria-hidden="true"><use href="#corazon" width="100%" height="100%"/></svg>
+        <h1 class="fit bienvenida" data-rem="4.6">Bienvenida</h1>
+        <div class="divisor" aria-hidden="true"><i></i><svg><use href="#corazon" width="100%" height="100%"/></svg><i></i></div>
+        <p class="fit nombre" data-rem="2.6">Lorenita Hot</p>
+      </div>
+    </div>
+
+    <button class="toca" id="toca" type="button" aria-label="Toca el corazón para comenzar">
+      <span>Toca el corazón</span>
+      <svg aria-hidden="true"><use href="#corazon" width="100%" height="100%"/></svg>
+    </button>
+   </div>
+  </div>
+</section>
+
+<!-- ================= PANTALLA 2 ================= -->
+<section class="pantalla" id="p2" aria-label="Feliz día del amor y la amistad">
+  <div class="capa"></div>
+  <div class="escena" id="e2">
+   <div class="borde sup" id="s2"></div>
+   <div class="borde inf" id="i2"></div>
+   <div class="lienzo" id="l2">
+    <div class="marco"><div class="foto" id="foto"></div></div>
+    <div class="mensaje">
+      <p class="fit" id="msgL1" data-grupo="msg" data-rem="3.3"></p>
+      <p class="fit" id="msgL2" data-grupo="msg" data-rem="3.3"></p>
+    </div>
+   </div>
+   <button class="musica" id="musica" type="button" hidden>♪ Toca para escuchar</button>
+  </div>
+</section>
+
+<audio id="cancion" src="cancion.mp3" preload="auto"></audio>
+
+<script>
+(function(){
+'use strict';
+
+/* =====================  CONFIGURACIÓN (lo que quieras cambiar)  ===================== */
+var FOTOS = ['img/1.jpg','img/2.jpg','img/3.jpg','img/4.jpg','img/5.jpg','img/6.jpg','img/7.jpg'];
+var FONDO_BLANCO  = [2,3,7]; // números de las imágenes que ya traen fondo blanco (no llevan fondo difuminado)
+var SEG_BIENVENIDA = 3;   // segundos que se ve el letrero antes de cambiar (cuenta desde que tocan el corazón)
+var SEG_POR_FOTO   = 5;   // segundos entre una imagen y la siguiente
+// mensajes de abajo: cada uno [línea 1, línea 2], se turnan cada SEG_POR_MENSAJE segundos; el último se queda fijo
+var MENSAJES = [
+  ['Y como último','acto de amor'],
+  ['No dejaré que','seas espectadora'],
+  ['Toma tus','flores amarillas']
+];
+var SEG_POR_MENSAJE = 7;
+/* ==================================================================================== */
+
+var NS='http://www.w3.org/2000/svg';
+var $=function(id){return document.getElementById(id)};
+var audio=$('cancion');
+var COLORES=['#e63950','#f06292','#ff9ebb','#ffc93c','#ff7a59','#b892ff'];
+
+/* ---------- 1) Dibujos: flores, hoja, corazón ---------- */
+function rep(n,fn){var o='';for(var i=0;i<n;i++)o+=fn(i*360/n);return o}
+$('defs').innerHTML=
+ '<symbol id="corazon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/><path fill="#fff" opacity=".38" d="M6.6 6c-1.5.3-2.5 1.6-2.4 3.1.1-1.5 1.1-2.6 2.4-3.1z"/></symbol>'+
+
+ '<symbol id="f-petalos" viewBox="-30 -30 60 60"><g fill="currentColor" stroke="rgba(0,0,0,.17)" stroke-width="1">'+
+   rep(5,function(a){return '<ellipse cx="0" cy="-15" rx="10.6" ry="14.6" transform="rotate('+a+')"/>'})+
+ '</g><circle r="12.5" fill="#fff" opacity=".22"/><circle r="6.4" fill="#ffd44d" stroke="rgba(0,0,0,.16)" stroke-width="1"/>'+
+   '<g fill="#e39a00">'+rep(6,function(a){return '<circle cx="0" cy="-3.3" r="1" transform="rotate('+a+')"/>'})+'</g></symbol>'+
+
+ '<symbol id="f-margarita" viewBox="-30 -30 60 60"><g fill="#fff" stroke="rgba(0,0,0,.15)" stroke-width="1">'+
+   rep(12,function(a){return '<ellipse cx="0" cy="-19.5" rx="4.9" ry="10.5" transform="rotate('+a+')"/>'})+
+ '</g><circle r="9.4" fill="currentColor" stroke="rgba(0,0,0,.2)" stroke-width="1"/><circle r="4.2" fill="rgba(0,0,0,.14)"/></symbol>'+
+
+ '<symbol id="f-rosa" viewBox="-30 -30 60 60"><g fill="currentColor" stroke="rgba(0,0,0,.22)" stroke-width="1">'+
+   rep(5,function(a){return '<circle cx="0" cy="-15.5" r="12.5" transform="rotate('+a+')"/>'})+
+ '</g><g fill="currentColor" stroke="rgba(0,0,0,.24)" stroke-width="1">'+
+   rep(4,function(a){return '<circle cx="0" cy="-7.4" r="9.2" transform="rotate('+(a+40)+')"/>'})+
+ '</g><circle r="6.6" fill="currentColor" stroke="rgba(0,0,0,.26)" stroke-width="1"/>'+
+ '<path d="M-3.2 -.8C-3.2 -5.4 3.4 -5.2 3.3 -.6 3.2 3.4 -1.6 4.2 -3.6 1.2" fill="none" stroke="rgba(0,0,0,.34)" stroke-width="1.3" stroke-linecap="round"/>'+
+ '<ellipse cx="-9" cy="-11" rx="8" ry="4" fill="#fff" opacity=".22" transform="rotate(-38 -9 -11)"/></symbol>'+
+
+ '<symbol id="hoja" viewBox="0 -13 40 26"><path d="M1 0C8-12 28-13 39 0 28 13 8 12 1 0Z" fill="#5f9e6e" stroke="rgba(0,0,0,.18)" stroke-width="1"/>'+
+ '<path d="M1 0C8-12 28-13 39 0Z" fill="#86c793" opacity=".65"/><path d="M2 0H35" stroke="#3f7d50" stroke-width="1.3" stroke-linecap="round"/></symbol>';
+
+function svgUse(id,cls){
+  var s=document.createElementNS(NS,'svg'); s.setAttribute('class',cls);
+  var u=document.createElementNS(NS,'use'); u.setAttribute('href','#'+id);
+  u.setAttribute('width','100%'); u.setAttribute('height','100%'); s.appendChild(u); return s;
+}
+/* pone un dibujo en la escena: x,y = centro (en rem), w = tamaño (rem) */
+function deco(padre,tipo,x,y,w,color,rot,delay){
+  var id=tipo==='corazon'?'corazon':tipo==='hoja'?'hoja':'f-'+tipo;
+  var s=svgUse(id,'deco');
+  s.style.setProperty('--x',x+'rem'); s.style.setProperty('--y',y+'rem');
+  s.style.setProperty('--w',w+'rem');
+  if(tipo==='hoja') s.style.setProperty('--h',(w*.65)+'rem');
+  s.style.setProperty('--c',color||'#e63950');
+  s.style.setProperty('--r',(rot||0)+'deg');
+  s.style.setProperty('--d',(delay||0)+'s');
+  padre.appendChild(s); return s;
+}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* guirnalda de flores a lo ancho de la pantalla (borde de arriba o de abajo) */
+function guirnalda(padre,base,amp,n,semilla){
+  var r=mulberry(semilla);
+  var tipos=['rosa','petalos','margarita','petalos','rosa','margarita','petalos'];
+  var cols =['#e63950','#ff9ebb','#ffc93c','#f77fa6','#ffc93c','#ffc93c','#b892ff'];
+  var paso=23.6/n, i, x, y;
+  for(i=0;i<n;i++){ // primero hojas (quedan detrás)
+    x=-0.6+i*paso+paso/2; y=base+Math.sin(i*1.3+semilla)*amp;
+    deco(padre,'hoja',x,y+(r()-.5)*.6,3.2+r()*.8,'',r()*360,.15+i*.05);
+  }
+  for(i=0;i<=n;i++){
+    x=-0.6+i*paso; y=base+Math.sin(i*1.3+semilla)*amp;
+    var k=(i+semilla)%tipos.length;
+    deco(padre,tipos[k],x,y,3.5+r()*1.3,cols[(k+i)%cols.length],(r()-.5)*70,.2+i*.06);
+  }
+}
+
+/* ---------- 2) Decoración de la pantalla 1 ---------- */
+var e1=$('l1'), e2=$('l2');
+(function(){
+  // hojas
+  [[-.2,7.6,3.4,-40],[3.6,5.5,3.1,25],[22.2,6.8,3.4,215],[19.1,5.2,3.1,160],
+   [.2,24.8,3.4,-125],[3.6,26.3,3.1,-35],[22.4,25,3.4,140],[19.2,26.5,3.1,35],
+   [.2,16.4,2.8,-95],[22.3,16.4,2.8,95]].forEach(function(h,i){deco(e1,'hoja',h[0],h[1],h[2],'',h[3],.3+i*.05)});
+  guirnalda($('s1'),.9,.55,6,3);
+  guirnalda($('i1'),3.15,.5,6,7);
+  // flores alrededor del letrero
+  [['rosa',1.4,7.8,5.3,'#e63950',10,.55],['petalos',4.3,5.3,3.7,'#ff9ebb',0,.75],['margarita',.5,11.6,3.3,'#ffc93c',15,.95],
+   ['rosa',21.1,7.6,5.1,'#ffc93c',-15,.65],['petalos',18.4,5,3.7,'#f77fa6',20,.85],['margarita',22.1,11.4,3.3,'#ffc93c',-10,1.05],
+   ['margarita',1.3,24.3,4.3,'#ffc93c',0,.85],['rosa',3.9,25.9,4.3,'#f77fa6',30,1.05],['petalos',.5,20.4,3.1,'#b892ff',10,1.15],
+   ['rosa',21.2,24.5,5.3,'#e63950',-20,.95],['petalos',18.6,26.1,3.7,'#ff9ebb',10,1.15],['petalos',22.1,20.3,3.1,'#ff7a59',0,1.25],
+   ['margarita',.3,15.9,2.5,'#ffc93c',0,1.2],['margarita',22.2,15.9,2.5,'#ffc93c',0,1.3]
+  ].forEach(function(f){deco(e1,f[0],f[1],f[2],f[3],f[4],f[5],f[6])});
+  // corazoncitos fijos
+  [[7.1,5.4,1.5,'#e63950',-12,1.3],[15.6,5.2,1.3,'#f06292',10,1.4],[5.6,26.7,1.4,'#f06292',-8,1.4],[17,27,1.6,'#e63950',12,1.5],
+   [10.1,4.6,1.0,'#ff9ebb',0,1.5],[13.4,27.3,1.0,'#ff9ebb',0,1.6]
+  ].forEach(function(c){deco(e1,'corazon',c[0],c[1],c[2],c[3],c[4],c[5])});
+})();
+
+/* ---------- 3) Decoración de la pantalla 2 ---------- */
+(function(){
+  [[1.2,5.6,3.4,-30],[4.4,4.2,3,30],[21.7,5.4,3.4,200],[18.4,4.1,3,150],
+   [1.1,27.2,3.4,-140],[21.9,27.3,3.4,140],[.2,15,2.6,-90],[22.4,15,2.6,90]
+  ].forEach(function(h,i){deco(e2,'hoja',h[0],h[1],h[2],'',h[3],.3+i*.05)});
+  guirnalda($('s2'),.9,.5,6,11);
+  guirnalda($('i2'),3.15,.45,6,5);
+  [['rosa',1.5,5.6,4.7,'#e63950',10,.55],['petalos',4.1,4.4,3.2,'#ff9ebb',0,.75],
+   ['rosa',21.1,5.6,4.7,'#ffc93c',-12,.65],['margarita',18.5,4.3,3.1,'#ffc93c',15,.85],
+   ['margarita',1.6,27.2,3.8,'#ffc93c',0,.9],['petalos',.5,22,2.8,'#b892ff',0,1.1],
+   ['petalos',21.1,27.2,3.9,'#f77fa6',20,.95],['rosa',22.1,22,2.9,'#e63950',0,1.15],
+   ['margarita',.3,11.5,2.3,'#ffc93c',0,1.2],['margarita',22.2,11.5,2.3,'#ffc93c',0,1.25]
+  ].forEach(function(f){deco(e2,f[0],f[1],f[2],f[3],f[4],f[5],f[6])});
+  [[4.6,36.7,1.3,'#f06292',-10,1.35],[11.25,36.9,1.7,'#e63950',0,1.4],[17.9,36.7,1.3,'#f06292',10,1.45]
+  ].forEach(function(c){deco(e2,'corazon',c[0],c[1],c[2],c[3],c[4],c[5])});
+})();
+
+/* ---------- 4) Fotos ---------- */
+var slides=FOTOS.map(function(src,i){
+  var d=document.createElement('div'); d.className='slide';
+  var f=document.createElement('div'); f.className='fondo';
+  if(FONDO_BLANCO.indexOf(i+1)<0) f.style.backgroundImage='url("'+src+'")';
+  var im=document.createElement('img'); im.src=src; im.alt='Un gatito con flores para ti ('+(i+1)+' de '+FOTOS.length+')'; im.decoding='async';
+  d.appendChild(f); d.appendChild(im); $('foto').appendChild(d); return d;
+});
+
+/* ---------- 5) Ajuste de tamaño (igual en todos los celulares) ---------- */
+function ajustarTextos(){
+  var els=document.querySelectorAll('.fit'), i, el, base, g, tam, grupos={};
+  for(i=0;i<els.length;i++){
+    el=els[i]; base=parseFloat(el.getAttribute('data-rem'));
+    el.style.fontSize=base+'rem';
+    tam=base;
+    if(el.scrollWidth>el.clientWidth+1) tam=base*el.clientWidth/el.scrollWidth*.97;
+    el._tam=tam; g=el.getAttribute('data-grupo');
+    if(g) grupos[g]=Math.min(grupos[g]||99,tam);   // las líneas de un mismo grupo quedan del mismo tamaño
+  }
+  for(i=0;i<els.length;i++){
+    el=els[i]; g=el.getAttribute('data-grupo');
+    el.style.fontSize=(g?grupos[g]:el._tam)+'rem';
+  }
+}
+function ajustar(){
+  var w=window.innerWidth,h=window.innerHeight, rem=Math.min(w/22.5,h/40), st=document.documentElement.style;
+  st.fontSize=rem+'px';
+  st.setProperty('--extra',Math.max(0,(h/rem-40)/2)+'rem');   // espacio sobrante arriba/abajo en celulares más largos
+  ajustarTextos();
+}
+window.addEventListener('resize',ajustar);
+window.addEventListener('orientationchange',function(){setTimeout(ajustar,250)});
+window.addEventListener('load',ajustar);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(ajustar);
+ajustar();
+
+/* ---------- 6) Corazones flotando ---------- */
+var sinMovimiento=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function nuevoCorazon(capa){
+  var s=svgUse('corazon','cf'), t=.9+Math.random()*1.5;
+  s.style.left=(Math.random()*96)+'%';
+  s.style.width=s.style.height=t+'rem';
+  s.style.color=COLORES[Math.floor(Math.random()*COLORES.length)];
+  s.style.setProperty('--dx',(Math.random()*8-4)+'rem');
+  s.style.animationDuration=(7+Math.random()*5)+'s';
+  s.addEventListener('animationend',function(){s.remove()});
+  capa.appendChild(s);
+}
+if(!sinMovimiento){
+  setInterval(function(){
+    var capa=document.querySelector('.pantalla.activa .capa');
+    if(capa&&!document.hidden&&capa.childElementCount<14) nuevoCorazon(capa);
+  },650);
+}
+function explosion(desde){
+  var r=desde.getBoundingClientRect(), capa=$('p1').querySelector('.capa'), i;
+  for(i=0;i<16;i++){
+    var s=svgUse('corazon','chispa'), a=Math.random()*Math.PI*2, d=5+Math.random()*9, t=1+Math.random()*1.4;
+    s.style.left=(r.left+r.width/2)+'px'; s.style.top=(r.top+r.height/2)+'px';
+    s.style.width=s.style.height=t+'rem';
+    s.style.color=COLORES[i%COLORES.length];
+    s.style.setProperty('--dx',(Math.cos(a)*d)+'rem'); s.style.setProperty('--dy',(Math.sin(a)*d-2)+'rem');
+    s.addEventListener('animationend',function(e){e.target.remove()});
+    capa.appendChild(s);
+  }
+}
+
+/* ---------- 7) Audio ---------- */
+/* Los celulares NO dejan sonar música sola: hace falta un toque de la persona.
+   Por eso el letrero tiene un corazón para tocar; ese toque "desbloquea" el audio
+   y la canción arranca sola justo cuando cambia a la segunda pantalla. */
+function desbloquearAudio(){
+  audio.muted=true;
+  var p=audio.play();
+  var listo=function(){audio.pause();audio.currentTime=0;audio.muted=false};
+  if(p&&p.then) p.then(listo).catch(function(){audio.muted=false}); else listo();
+}
+function sonar(){
+  audio.muted=false; audio.currentTime=0;
+  var p=audio.play();
+  if(p&&p.catch) p.catch(function(){$('musica').hidden=false});   // plan B: botón para activar el sonido
+}
+$('musica').addEventListener('click',function(){
+  audio.currentTime=0; audio.play(); this.hidden=true;
+});
+audio.addEventListener('playing',function(){$('musica').hidden=true});
+
+/* ---------- 8) Secuencia ---------- */
+function armarLinea(el,texto,desde){
+  el.innerHTML='';
+  var palabras=texto.split(' '), i, span;
+  for(i=0;i<palabras.length;i++){
+    span=document.createElement('span'); span.className='palabra'; span.textContent=palabras[i];
+    span.style.animationDelay=((desde+i)*.16)+'s';
+    el.appendChild(span);
+    if(i<palabras.length-1) el.appendChild(document.createTextNode('\u00A0'));
+  }
+  return palabras.length;
+}
+function mostrarMensaje(i){
+  var m=MENSAJES[i], n1=armarLinea($('msgL1'),m[0],0);
+  armarLinea($('msgL2'),m[1],n1);
+  ajustarTextos();
+}
+function iniciarMensajes(){
+  mostrarMensaje(0);
+  var i=0;
+  var t=setInterval(function(){
+    i++;
+    mostrarMensaje(i);
+    if(i>=MENSAJES.length-1) clearInterval(t);   // el último se queda fijo
+  },SEG_POR_MENSAJE*1000);
+}
+
+var iniciado=false;
+function irPantalla2(){
+  slides[0].classList.add('on');
+  $('p2').classList.add('visto');
+  $('p2').classList.add('activa');
+  $('p1').classList.remove('activa');
+  ajustarTextos();
+  sonar();
+  iniciarMensajes();
+  var i=0;
+  var t=setInterval(function(){
+    i++;
+    slides[i].classList.add('on');
+    var previa=slides[i-1];
+    setTimeout(function(){previa.classList.remove('on')},700);
+    if(i>=slides.length-1) clearInterval(t);   // se queda en la última imagen
+  },SEG_POR_FOTO*1000);
+}
+$('toca').addEventListener('click',function(){
+  if(iniciado) return; iniciado=true;
+  this.classList.add('pulsado');
+  explosion(this.querySelector('svg'));
+  desbloquearAudio();
+  setTimeout(irPantalla2,SEG_BIENVENIDA*1000);
+});
+
+/* precarga para que no haya parpadeos */
+FOTOS.forEach(function(s){var im=new Image();im.src=s});
+})();
+</script>
+</body>
+</html>
